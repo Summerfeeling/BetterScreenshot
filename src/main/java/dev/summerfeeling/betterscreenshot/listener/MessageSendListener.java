@@ -5,9 +5,7 @@ import dev.summerfeeling.betterscreenshot.publisher.Publisher;
 import dev.summerfeeling.betterscreenshot.publisher.Result;
 import net.labymod.api.event.Subscribe;
 import net.labymod.api.event.events.client.chat.MessageSendEvent;
-import net.labymod.core.LabyModCore;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -28,7 +26,6 @@ public class MessageSendListener {
     @Subscribe
     public void onMessageSend(MessageSendEvent event) {
         if (event.getMessage().startsWith("-uploadscreenshot") || event.getMessage().startsWith("-deletescreenshot")) {
-            ClientPlayerEntity player = LabyModCore.getMinecraft().getPlayer();
             event.setCancelled(true);
 
             try {
@@ -75,11 +72,3 @@ public class MessageSendListener {
     }
 
 }
-
-/*
-               ScreenShotHelper.saveScreenshot(this.mc.gameDir, this.mc.getMainWindow().getFramebufferWidth(), this.mc.getMainWindow().getFramebufferHeight(), this.mc.getFramebuffer(), (chatMessage) -> {
-                  this.mc.execute(() -> {
-                     this.mc.ingameGUI.getChatGUI().printChatMessage(chatMessage);
-                  });
-               });
- */
