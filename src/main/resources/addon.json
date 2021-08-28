@@ -3,7 +3,7 @@
   "uuid": "%uuid%",
   "author": "Summerfeeling",
   "description": "Hit your screenshot key and simply upload your screenshot to imgur.com or delete it. Uploading screenshots have never been easier!",
-  "version": 1,
+  "version": 2,
   "category": 2,
   "icon": "https://i.imgur.com/Dss7VFh.png",
   "mainClass": "dev.summerfeeling.betterscreenshot.BetterScreenshot",
