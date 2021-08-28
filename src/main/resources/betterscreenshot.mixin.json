@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.summerfeeling.betterscreenshot.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "betterscreenshot.refmap.json",
+  "verbose": false,
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "ScreenShotHelperMixin",
+    "NewChatGuiMixin"
+  ]
+}
