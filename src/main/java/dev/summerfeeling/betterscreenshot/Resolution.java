@@ -14,8 +14,8 @@ public enum Resolution {
     QHD(2560, 1440),
     ULTRA_HD(3840, 2160);
 
-    private int height;
-    private int width;
+    private final int height;
+    private final int width;
 
     Resolution(int width, int height) {
         this.height = height;
