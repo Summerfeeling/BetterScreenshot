@@ -8,7 +8,6 @@ import net.minecraft.client.renderer.texture.NativeImage;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.util.ScreenShotHelper;
 import net.minecraft.util.Util;
-import net.minecraft.util.text.Color;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.ClickEvent.Action;
@@ -16,6 +15,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 
 import java.awt.*;
@@ -30,15 +30,11 @@ public abstract class ScreenShotHelperMixin {
 
     @Shadow @Final private static Logger LOGGER;
 
+    /**
+     * @author Summerfeeling
+     */
+    @Overwrite
     private static void saveScreenshotRaw(File gameDirectory, String screenshotName, int width, int height, Framebuffer buffer, Consumer<ITextComponent> messageConsumer) {
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
-        System.out.println("saveScreenshotRaw");
         NativeImage nativeImage = ScreenShotHelper.createScreenshot(width, height, buffer);
 
         File screenshotsDirectory = new File(gameDirectory, "screenshots");
@@ -56,28 +52,7 @@ public abstract class ScreenShotHelperMixin {
                     return;
                 }
 
-                if (BetterScreenshot.getInstance().isDirectUpload()) {
-                    Publisher.publishScreenshot(screenshotFile, (result, detail) -> {
-                        if (result == Result.UPLOAD_DONE) {
-                            Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(new StringTextComponent("§aUpload finished: " + detail).modifyStyle((style) -> style.setClickEvent(new ClickEvent(Action.OPEN_URL, detail))));
-
-                            if (BetterScreenshot.getInstance().isCopyToClipboard()) {
-                                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(detail), new StringSelection(detail));
-                            }
-                        } else {
-                            Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(new StringTextComponent("§cUpload failed: §f" + detail));
-                        }
-                    });
-
-                    messageConsumer.accept(new StringTextComponent("Saved screenshot as ")
-                        .mergeStyle(TextFormatting.GOLD)
-                        .appendString(screenshotFile.getName())
-                        .modifyStyle((style) -> style.setColor(Color.fromInt(TextFormatting.YELLOW.getColorIndex())))
-                        .modifyStyle((style) -> style.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new StringTextComponent("Open screenshot"))))
-                        .modifyStyle((style) -> style.setClickEvent(new ClickEvent(Action.OPEN_FILE, screenshotFile.getAbsolutePath()))));
-
-                    return;
-                }
+                // Build message
 
                 IFormattableTextComponent firstComponent = new StringTextComponent("Saved screenshot as ")
                     .mergeStyle(TextFormatting.GOLD)
@@ -89,7 +64,7 @@ public abstract class ScreenShotHelperMixin {
 
                 IFormattableTextComponent secondComponent = new StringTextComponent("\n» ").mergeStyle(TextFormatting.GRAY);
 
-                if (BetterScreenshot.getInstance().isUploadEnabled()) {
+                if (BetterScreenshot.getInstance().isUploadEnabled() && !BetterScreenshot.getInstance().isDirectUpload()) {
                     secondComponent.append(new StringTextComponent("[UPLOAD] ")
                         .mergeStyle(TextFormatting.YELLOW)
                         .modifyStyle((style) -> style.setBold(true))
@@ -111,6 +86,21 @@ public abstract class ScreenShotHelperMixin {
                     firstComponent.append(secondComponent);
                 }
 
+                // Direct upload
+                if (BetterScreenshot.getInstance().isDirectUpload()) {
+                    Publisher.publishScreenshot(screenshotFile, (result, detail) -> {
+                        if (result == Result.UPLOAD_DONE) {
+                            Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(new StringTextComponent("§aUpload finished: " + detail).modifyStyle((style) -> style.setClickEvent(new ClickEvent(Action.OPEN_URL, detail))));
+
+                            if (BetterScreenshot.getInstance().isCopyToClipboard()) {
+                                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(detail), new StringSelection(detail));
+                            }
+                        } else {
+                            Minecraft.getInstance().ingameGUI.getChatGUI().printChatMessage(new StringTextComponent("§cUpload failed: §f" + detail));
+                        }
+                    });
+                }
+
                 messageConsumer.accept(firstComponent);
             } catch (Exception e) {
                 LOGGER.warn("Couldn't save screenshot", e);
@@ -130,33 +120,3 @@ public abstract class ScreenShotHelperMixin {
     }
 
 }
-/*
-   private static void saveScreenshotRaw(File gameDirectory, @Nullable String screenshotName, int width, int height, Framebuffer buffer, Consumer<ITextComponent> messageConsumer) {
-      NativeImage nativeimage = createScreenshot(width, height, buffer);
-      File file1 = new File(gameDirectory, "screenshots");
-      file1.mkdir();
-      File file2;
-      if (screenshotName == null) {
-         file2 = getTimestampedPNGFileForDirectory(file1);
-      } else {
-         file2 = new File(file1, screenshotName);
-      }
-
-      Util.getRenderingService().execute(() -> {
-         try {
-            nativeimage.write(file2);
-            ITextComponent itextcomponent = (new StringTextComponent(file2.getName())).mergeStyle(TextFormatting.UNDERLINE).modifyStyle((style) -> {
-               return style.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file2.getAbsolutePath()));
-            });
-            messageConsumer.accept(new TranslationTextComponent("screenshot.success", itextcomponent));
-         } catch (Exception exception) {
-            LOGGER.warn("Couldn't save screenshot", (Throwable)exception);
-            messageConsumer.accept(new TranslationTextComponent("screenshot.failure", exception.getMessage()));
-         } finally {
-            nativeimage.close();
-         }
-
-      });
-   }
-
- */

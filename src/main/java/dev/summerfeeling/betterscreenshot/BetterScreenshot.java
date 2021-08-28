@@ -71,7 +71,6 @@ public class BetterScreenshot extends LabyModAddon {
         list.add(new DescribableBooleanElement("[UPLOAD] Enabled", this, new IconData(Material.LEVER), "uploadEnabled", true).editDescriptionText("Shows / hides the [UPLOAD] button"));
         list.add(new DescribableBooleanElement("Automatic copy to clipboard", this, new IconData(Material.BOOK_AND_QUILL), "copyToClipboard", false).editDescriptionText("Should the imgur.com link be automatically copied to your clipboard?"));
         list.add(new DescribableBooleanElement("Automatic upload", this, new IconData(Material.FIREWORK_ROCKET), "directUpload", false).editDescriptionText("Should every screenshot be uploaded automatically?"));
-        list.add(new DescribableBooleanElement("Fast screenshots", this, new IconData(Material.SUGAR), "fastScreenshots", false).editDescriptionText("Don't freeze your game while taking a screenshot."));
 
         list.add(new DescribableHeaderElement("§cDelete Function").editDescriptionText("You can delete accidentally created screenshots with one click directly in Minecraft"));
         list.add(new DescribableBooleanElement("[DELETE] Enabled", this, new IconData(Material.LEVER), "deleteEnabled", true).editDescriptionText("Shows / hides the [DELETE] button"));

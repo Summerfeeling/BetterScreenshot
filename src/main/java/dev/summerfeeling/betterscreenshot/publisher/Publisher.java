@@ -53,8 +53,6 @@ public class Publisher {
                 BufferedImage scaled = original;
 
                 if (resolution != Resolution.ORIGINAL) {
-                    long start = System.currentTimeMillis();
-
                     float scaleX = (float) resolution.getWidth() / (float) original.getWidth();
                     float scaleY = (float) resolution.getHeight() / (float) original.getHeight();
 
